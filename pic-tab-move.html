@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+*{
+	padding:0px;
+	margin:0px;
+}
+body{
+	font-size:14px;
+}
+h2{
+	font-size:16px;
+}
+#box{
+	width:510px;
+	height:310px;
+	border:5px solid gray;
+	margin:10px auto;
+}
+#innerbox{
+	width:500px;
+	height:300px;
+	border:5px solid #e8e8e8;
+	position:relative;
+	overflow:hidden;
+}
+#content{
+	width:1000px;
+	height:300px;
+	position:absolute;
+	left:0px;/*0  -500px */
+}
+#content img{
+	width:500px;
+	height:300px;
+	background:red;
+	float:left;
+}
+
+#bottom{
+	width:500px;
+	height:80px;
+	position:absolute;
+	left:0;
+	bottom:0;/*0 -80px*/
+}
+#bottom div{
+	width:500px;
+	height:80px;
+	background:#333333;
+	position:absolute;
+	left:0;
+	bottom:0;
+	/*透明度兼容性写法*/
+	filter: alpha(opacity=60); /* IE */   
+	-moz-opacity:0.6;    /* FF 主要是为了兼容老版本的FF */
+	opacity:0.6;    /* FF */
+}
+#bottom h2,#bottom p{
+	position:absolute;
+	left:10px;
+	color:#f7f7f7;
+}
+#bottom h2{
+	top:10px;
+	text-align:left;
+}
+#bottom p{
+	top:40px;
+	text-align:left;
+	text-indent:2em;
+	word-wrap:break-word;
+	word-break:break-all;
+	width:440px;
+}
+
+</style>
+</head>
+<script src="myjs.js"></script>
+<script>
+window.onload=function(){
+	var cont=document.getElementById("content");
+	var aPic=cont.getElementsByTagName("img");
+
+	var contH=document.getElementById("contentH");
+	var contP=document.getElementById("contentP");
+
+	//alert(aPic.length);
+	var imgArr=["1.jpg","2.jpg","3.jpg","4.jpg"];
+	var h2Arr=["腹有诗书气自华","双飞燕","万绿丛中一点红","戴眼镜小女孩"];
+	var pArr=["粗缯大布裹生涯，腹有诗书气自华。","此生与君共,万世千生。比翼双飞,不思归。","万绿丛中一点红，动人春色不须多。","戴眼镜的可爱小女孩,好萌啊... "];
+	//初始化
+	var cur=0;
+	for (var i=0;i<aPic.length ;i++ )
+	{
+		aPic[i].src=imgArr[i];
+	}
+	contH.innerHTML=h2Arr[cur];
+	contP.innerHTML=pArr[cur];
+
+	var bottom=document.getElementById("bottom");
+	var timer=null;
+	clearInterval(timer);
+	picTab();
+
+	//设置鼠标移入停止运动
+	for (var i=0;i<aPic.length ;i++ )
+	{
+		aPic[i].onmouseover=function(){
+			clearInterval(timer);
+		};
+
+		aPic[i].onmouseout=function(){
+			picTab();
+		};
+
+	}
+	//////////////////////////////运动封装//
+	function picTab(){
+		timer=setInterval(function(){
+			//cont向左移动500px
+			//doMove ( obj, attr, dir, target, endFn )
+			cur++;
+			doMove ( cont, "left", 20, -500,function(){
+				//把content瞬间拉回去
+				
+				cont.style.left=0;
+				aPic[0].src=imgArr[cur%4];
+				aPic[1].src=imgArr[(cur+1)%4];
+			});
+
+			//设置下面的文字块显示隐藏
+			doMove ( bottom, "bottom", 5, -80, function(){
+				//curA和curB分开
+				contH.innerHTML=h2Arr[cur%4];
+				contP.innerHTML=pArr[cur%4];
+				doMove ( bottom, "bottom", 5, 0);
+			} );
+			
+		},3000);//隔2000毫秒运动一次 运动一次的时间取决于速度和距离	
+	}
+
+
+	////////////////////////////////
+};
+</script>
+<body>
+<div id="box">
+	<div id="innerbox">
+		<div id="content">
+			<img src="">
+			<img src="">
+		</div>
+		<div id="bottom">
+			<div></div>
+			<h2 id="contentH"></h2>
+			<p id="contentP"></p>
+		</div>
+	</div>
+</div>
+</body>
+</html>
